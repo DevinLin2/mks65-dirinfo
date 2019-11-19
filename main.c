@@ -11,6 +11,7 @@ int main(int argc, char *argv[]) {
   DIR * dir;
   struct stat stat_buffer;
   int dirsize = 0;
+  int type = 0;
   if (argc < 2) {
     printf("Enter a valid directory or '.' for current directory");
     exit(1);
@@ -21,11 +22,14 @@ int main(int argc, char *argv[]) {
 
   while (stream != NULL) {
     char * name = stream -> d_name;
+    type = stream -> d_type; // if this is 4 then it is a directory
     printf("%s: ", name);
-    if(S_ISDIR(stat_buffer.st_mode)) { // if is a directory
-      printf("directory\n");
+    if(type == 4) { // if is a directory
+      printf("directory\n\n");
     } else {
       printf("regular file\n");
+      stat(name, &stat_buffer);
+      printf("size: %ld bytes\n\n", stat_buffer.st_size);
       dirsize += stat_buffer.st_size;
     }
     stream = readdir(dir);
