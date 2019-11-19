@@ -19,30 +19,18 @@ int main(int argc, char *argv[]) {
   }
   struct dirent * stream = readdir(dir);
 
-  printf("Directories: \n" );
   while (stream != NULL) {
-    if(stat(stream -> d_name, &stat_buffer) < 0) {
-      printf("Error: %s\n", strerror(errno));
-    }
+    char * name = stream -> d_name;
+    printf("%s: ", name);
     if(S_ISDIR(stat_buffer.st_mode)) { // if is a directory
-      printf("%s \n", stream -> d_name);
-    }
-    stream = readdir(dir);
-  }
-  closedir(dir);
-  printf("\nRegular Files:\n" );
-  dir = opendir(argv[1]);
-  stream = readdir(dir);
-  while (stream != NULL) {
-    if(stat(stream -> d_name, &stat_buffer) < 0){
-      printf("Error: %s\n", strerror(errno));
-    }
-    if(!S_ISDIR(stat_buffer.st_mode)){
-      printf("%s \n", stream -> d_name);
+      printf("directory\n");
+    } else {
+      printf("regular file\n");
       dirsize += stat_buffer.st_size;
     }
     stream = readdir(dir);
   }
+  closedir(dir);
   printf("\nTotal Size: %d bytes\n", dirsize);
   return 0;
 }
